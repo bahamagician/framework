@@ -1,0 +1,56 @@
+$devices: (tablet: 768px, phone: 320px, desktop: 1200px, tv: 2500px);
+
+// A function to find out what the next breakpoint is within the devices map
+@function next-breakpoint($map, $key) {
+  // Store the values of the map as a list, so we can access them with nth
+  $values: map-keys($map);
+
+  // Get the index of the key within the map
+  $i: index($values, $key) + 1;
+
+  // If the key doesn't exist, or it's the last key in the map, return null
+  @if $i > length($map) {
+    @return null;
+  }
+  // Otherwise, return the value
+  @else {
+    @return map-get($map, nth($values, $i));
+
+  }
+}
+
+@mixin breakpoint($device) {
+  @if (map-has-key($devices, $device)) {
+    @media (max-width: map-get($devices, $device)) {
+      @content;
+    }
+  }
+  @else {
+    @warn "Device key not found.";
+  }
+}
+
+@each $device, $size in $devices {
+  .show-for-#{$device} {
+    display:none;
+    @include breakpoint($device){
+      display:block;
+    }
+  }
+  .hide-for-#{$device} {
+    display: block;
+    @include breakpoint($device){
+      display:none;
+    }
+  }
+}
+
+
+//Testing the next-breakpoint function
+$upper-size: next-breakpoint($devices, desktop);
+
+@media (max-width: $upper-size) {
+  .booyah{
+    display:none;
+  }
+}
