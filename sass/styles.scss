@@ -2,20 +2,23 @@ $devices: (tablet: 768px, phone: 320px, desktop: 1200px, tv: 2500px);
 
 // A function to find out what the next breakpoint is within the devices map
 @function next-breakpoint($map, $key) {
-  // Store the values of the map as a list, so we can access them with nth
+  // Store the keys of the map as a list
   $values: map-keys($map);
 
-  // Get the index of the key within the map
-  $i: index($values, $key) + 1;
+  $i: 0;
+
+  // If the Key Exists, Get the index of the key within the map and add 1 to it for the next breakpoint in the map
+  @if (map-has-key($map, $key)) {
+    $i: index($values, $key) + 1;
+  }
 
   // If the key doesn't exist, or it's the last key in the map, return null
-  @if $i > length($map) {
+  @if ($i > length($map) or $i == 0) {
     @return null;
   }
   // Otherwise, return the value
   @else {
     @return map-get($map, nth($values, $i));
-
   }
 }
 
